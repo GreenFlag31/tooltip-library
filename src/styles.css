@@ -1,1 +1,54 @@
-/* You can add global styles to this file, and also import other style files */
+@import "../projects/ngx-tooltip-ease/src/lib/tooltip.css";
+
+@font-face {
+  font-family: "Poppins";
+  src: url("./assets/poppins/Poppins-Regular.ttf") format("truetype");
+  font-weight: 500;
+}
+@font-face {
+  font-family: "Poppins";
+  src: url("./assets/poppins/Poppins-Medium.ttf") format("truetype");
+  font-weight: 600;
+}
+@font-face {
+  font-family: "Poppins";
+  src: url("./assets/poppins/Poppins-SemiBold.ttf") format("truetype");
+  font-weight: 700;
+}
+@font-face {
+  font-family: "Poppins";
+  src: url("./assets/poppins/Poppins-Bold.ttf") format("truetype");
+  font-weight: bold;
+}
+@font-face {
+  font-family: "Allura";
+  src: url("./assets/Allura/Allura-Regular.ttf") format("truetype");
+  font-weight: 400;
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  font-family: "Poppins", sans-serif;
+}
+
+::-webkit-scrollbar {
+  width: 12px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgb(203, 203, 203);
+  border-radius: 10px;
+}
+header p.ngx-tooltip {
+  background: #000;
+  color: gold;
+  font-family: "Allura";
+  font-size: 1.3rem;
+}
+.styling-container p.ngx-tooltip {
+  padding: 0.1rem 0.3rem;
+  background: linear-gradient(to right, gold, rgb(255, 51, 0));
+}
