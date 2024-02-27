@@ -44,15 +44,13 @@ This library consists in a directive to add in the template with options:
 
 # Responsive
 
-This library is responsive and will adapt its position based on the available space. If the width of the tooltip is greater than the window width, a truncated tooltip with an ellipsis will appear.
+This library is responsive and will adapt its position based on the available space. If the width of the tooltip is greater than the window width, a truncated tooltip with an ellipsis will appear. Responsiveness comes without attaching a resize event.
 
 # Ready-to-use animations keyframes
 
 This library comes with build-in and ready-to-use animations keyframes to animate the opening menu. Just fill in the `name`, `duration` and `easing function` (more info on the `animation CSS shorthand` [here](https://developer.mozilla.org/en-US/docs/Web/CSS/animation)).
 
-You have the choice for the opening menu animation between 'none' | any following build-in animations | or creating your own keyframes. Tooltips automatically adjust their
-opening position if there is not enough space for the items to be
-displayed.
+You have the choice for the opening menu animation between no animations, any following build-in animations, or creating your own keyframes.
 
 ```css
 @keyframes scale-up {
@@ -127,7 +125,7 @@ displayed.
 
 # Style customisation
 
-Instead of changing style thourgh a dedicated API with limited options, this library let the total control to the user over the styling possibilities. Create a new `.css` (or preprocessor) file, and import it in your `styles.css` file at root. The class to override is `ngx-tooltip` in a paragraph.
+Instead of changing style thourgh a dedicated API with limited options, this library let the total control over the styling possibilities to the user. (Recommanded) Create a new `.css` (or preprocessor) file, and import it in your `styles.css` file at root. The class to override is `ngx-tooltip` inside a paragraph.
 
 ```css
 header p.ngx-tooltip {
