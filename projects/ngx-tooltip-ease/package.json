@@ -2,11 +2,25 @@
   "name": "ngx-tooltip-ease",
   "version": "0.0.1",
   "peerDependencies": {
-    "@angular/common": "^17.2.0",
-    "@angular/core": "^17.2.0"
+    "@angular/common": "^17.0.0",
+    "@angular/core": "^17.0.0"
   },
   "dependencies": {
     "tslib": "^2.3.0"
   },
+  "exports": {
+    "./css": "./src/lib/tooltip.css"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GreenFlag31/tooltip-library"
+  },
+  "keywords": [
+    "Angular",
+    "Tooltip",
+    "Responsive",
+    "Customisable",
+    "Animations"
+  ],
   "sideEffects": false
 }

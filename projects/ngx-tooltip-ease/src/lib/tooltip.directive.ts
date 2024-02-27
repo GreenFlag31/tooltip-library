@@ -1,22 +1,17 @@
-import {
-  AfterViewInit,
-  Directive,
-  ElementRef,
-  HostListener,
-  Input,
-} from '@angular/core';
+import { Directive, ElementRef, HostListener, Input } from '@angular/core';
 
 @Directive({
   selector: '[ngxTooltip]',
   standalone: true,
 })
-export class TooltipDirective implements AfterViewInit {
+export class TooltipDirective {
   @Input() content = '';
-  @Input() position: 'top' | 'bottom' = 'bottom';
+  @Input() position: 'top' | 'bottom' = 'top';
   @Input() animation = 'scale-up fade-in';
   @Input() animationFn = 'ease-out';
   @Input() animationMs = '200';
   @Input() offsetSpace = 5;
+  @Input() disable = false;
 
   private tooltip!: HTMLSpanElement;
 
@@ -26,7 +21,9 @@ export class TooltipDirective implements AfterViewInit {
     return this.element.nativeElement;
   }
 
-  ngAfterViewInit() {}
+  get nativeRect() {
+    return this.native.getBoundingClientRect();
+  }
 
   @HostListener('mouseleave')
   onLeave() {
@@ -35,29 +32,36 @@ export class TooltipDirective implements AfterViewInit {
 
   @HostListener('mouseenter')
   onEnter() {
-    if (this.content.trim().length === 0) return;
+    if (this.content.trim().length === 0 || this.disable) return;
 
-    const { left, top, bottom } = this.native.getBoundingClientRect();
     this.tooltip = document.createElement('p');
     this.tooltip.classList.add('ngx-tooltip');
     this.appendContent();
 
-    const tooltipWidth = this.tooltip.clientWidth;
-    const tooltipHeight = this.tooltip.clientHeight;
-    const buttonWidth = this.native.clientWidth;
-    const oneSideWidthDif = (tooltipWidth - buttonWidth) / 2;
     const [parentPositionedTopCorrection, parentPositionedLeftCorrection] =
       this.correctionParentPositioned();
 
-    let tooltipTop =
-      top - tooltipHeight - this.offsetSpace - parentPositionedTopCorrection;
+    const topPosition = this.computeTopPosition(parentPositionedTopCorrection);
+    const leftPosition = this.computeLeftPosition(
+      parentPositionedLeftCorrection
+    );
 
-    if (tooltipTop < 0) {
-      // no space on top
-      tooltipTop = bottom + this.offsetSpace;
-    }
+    this.tooltip.style.top = `${topPosition}px`;
+    this.tooltip.style.left = `${leftPosition}px`;
+    this.tooltip.style.animation = this.buildAnimations();
+  }
 
-    // align middle
+  /**
+   * Compute left position according to the available space and user choice.
+   * If the tooltip width is greater than the windown width, add an ellipsis.
+   */
+  computeLeftPosition(parentPositionedLeftCorrection: number) {
+    const { left } = this.nativeRect;
+    const tooltipWidth = this.tooltip.clientWidth;
+    const buttonWidth = this.native.clientWidth;
+    const oneSideWidthDif = (tooltipWidth - buttonWidth) / 2;
+
+    // align middle by default
     let leftPosition = left - oneSideWidthDif - parentPositionedLeftCorrection;
     if (oneSideWidthDif > 0) {
       // text overflows
@@ -70,27 +74,59 @@ export class TooltipDirective implements AfterViewInit {
       }
     }
 
-    this.tooltip.style.top = `${tooltipTop}px`;
-    this.tooltip.style.left = `${leftPosition}px`;
-    this.tooltip.style.animation = this.buildAnimations();
+    this.tooltip.style.maxWidth = '100%';
+    if (tooltipWidth > window.innerWidth) {
+      this.tooltip.classList.add('ngx-ellipsis');
+      this.tooltip.style.maxWidth = `${this.native.clientWidth}px`;
+    }
+
+    return leftPosition;
+  }
+
+  /**
+   * Compute top position according to the available space and user choice.
+   */
+  computeTopPosition(parentPositionedTopCorrection: number) {
+    const { top, bottom } = this.nativeRect;
+    const tooltipHeight = this.tooltip.clientHeight;
+
+    const tooltipTopPosition =
+      top - tooltipHeight - this.offsetSpace - parentPositionedTopCorrection;
+
+    let topPosition = tooltipTopPosition;
+    if (topPosition < 0 || this.position === 'bottom') {
+      // no space on top, put it on bottom (or user position choice)
+      topPosition = bottom + this.offsetSpace;
+    }
+
+    if (
+      this.position === 'bottom' &&
+      topPosition + tooltipHeight + parentPositionedTopCorrection >
+        window.innerHeight
+    ) {
+      // no space on bottom, put it on top
+      topPosition = tooltipTopPosition;
+    }
+
+    return topPosition;
   }
 
   buildAnimations() {
-    let animationApplied = '';
+    let animationApplied = [];
     const splittedAnimations = this.animation.split(' ');
 
     for (const animation of splittedAnimations) {
-      animationApplied += `${animation} ${this.animationMs}ms ${this.animationFn}, `;
+      animationApplied.push(
+        `${animation} ${this.animationMs}ms ${this.animationFn}`
+      );
     }
 
-    animationApplied = animationApplied.substring(
-      0,
-      animationApplied.length - 2
-    );
-
-    return animationApplied;
+    return animationApplied.join(', ');
   }
 
+  /**
+   * Append content with possible line return.
+   */
   appendContent() {
     const splittedContent = this.content.split('\\n');
 
@@ -107,6 +143,9 @@ export class TooltipDirective implements AfterViewInit {
     this.native.after(this.tooltip);
   }
 
+  /**
+   * If a parent has a non static positioning AND a transform value, CSS rules about positioning take the parent as position reference. Not the direct parent (ancestors > 1).
+   */
   correctionParentPositioned() {
     let parentPositionedTopCorrection = 0;
     let parentPositionedLeftCorrection = 0;
