@@ -3,7 +3,7 @@
 # Description
 
 ngx-tooltip-ease is an Angular library providing a lightweight, performant, and responsive tooltip. This library supports custom and
-build-in animations, multi-lines tooltip, and a custom offset space.
+build-in animations, multiple lines tooltip, and a custom offset space.
 
 Support Angular version starts at v17.
 
@@ -26,7 +26,7 @@ Add the `TooltipDirective` to your module or standalone component.
 
 # Usage
 
-This library consists in a directive to add in the template with options:
+This library consists in a directive and its options to add in the template:
 
 ```html
 <button ngxTooltip content="Hello!" animation="going-down">Ngx-tooltip-ease</button>
@@ -39,7 +39,7 @@ This library consists in a directive to add in the template with options:
 | position    | top              | Set the position of the tooltip. Accepts: top or bottom.                                                   |
 | animation   | scale-up fade-in | Set the keyframes animations. Multiple animations should be separated with a space.                        |
 | animationFn | ease-out         | Set the timing function of the animation. Value: 'ease', 'ease-in', 'ease-out', cubic-bezier, ...          |
-| animationMs | 200              | Set the duration of the animation in ms.                                                                   |
+| animationMs | 200              | Set the duration of the animation in milliseconds.                                                         |
 | offsetSpace | 5                | Define in pixels the offset space between the hosting element and the tooltip.                             |
 
 # Responsive
@@ -125,7 +125,7 @@ You have the choice for the opening menu animation between no animations, any fo
 
 # Style customisation
 
-Instead of changing style thourgh a dedicated API with limited options, this library let the total control over the styling possibilities to the user. (Recommanded) Create a new `.css` (or preprocessor) file, and import it in your `styles.css` file at root. The class to override is `ngx-tooltip` inside a paragraph.
+Instead of changing style through a dedicated API with limited options, this library let the total control over the styling possibilities to the user. (Recommanded) To change default styles, create a new `.css` (or preprocessor) file, and import it in your `styles.css` file at root. The class to override is `ngx-tooltip` attached to a paragraph element.
 
 ```css
 header p.ngx-tooltip {
